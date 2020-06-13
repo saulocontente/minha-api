@@ -20,11 +20,12 @@ server.get(resourceEndpoint+param, function(request, response){
 })
 
 server.post(resourceEndpoint, function(request, response){
-    const {  id  ,  name  } = request.body
+    const {  id  ,  first_name  } = request.body
 
     //Salvar
 
-    response.status(201).json({  id  ,  name  })
+    response.status(201).json({  id  ,  first_name  })
+    console.log(`POST {id : ${id} first_name : ${first_name}}`)
 })
 
 server.put(resourceEndpoint+param, function(request, response){
@@ -33,14 +34,21 @@ const client = data.find(foundClient => foundClient.id == id)
 
 if(!client) return response.status(204).json()
 
-const {  name  } = request.body
+const {  first_name  } = request.body
 
-response.json({  id  ,  name  })
-
+client.first_name = first_name
 response.json(client)
-
+console.log(`PUT CLIENT ID: ${client.id}`)
 })
-server.delete(resourceEndpoint, function(request, response){})
+
+server.delete(resourceEndpoint+param, function(request, response){
+    const { id } = request.params
+    const clientsFiltered = data.filter(client => client.id != id)
+
+    if(!clientsFiltered) return response.status(204).json()
+
+    response.json(clientsFiltered)
+})
 
 
 server.listen(3000, function(){
